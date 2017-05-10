@@ -1,27 +1,33 @@
-#!/usr/bin/python
-
-# [load modules here]
-import pygame
-import pygame.locals
+import hit_run as hr
 import numpy as np
-import Hit_run
+import pygame
+from pygame.locals import *
 
+class fish(pygame.sprite.Sprite):
 
-# [resource handling functions here]
+    #Fish object in the simulation Returns: fish object
+    #Functions: move, update_pos, update_home, update_sigma
+    #Attributes: area, pos, home, sigma
 
-class Fish(pygame.sprite.Sprite):
-	"""docstring for Fish"""
-	def __init__(self, arg):
-		pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_png('ball.png')
+    def __init__(self, pos, home, sigma):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_png('fish.png')
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        
-		pos_now = np.array([])
-		pos_home = np.array([])
-		territory = np.array([[1,0],[0,1]])
-		step_range = 1
-        
-# "Perform actual movement based on position_now, velocity and show up distribution"
-    def move(self):
-    	pos_next = binorm_hitrun_circle(pos_home,territory,pos_now,pos_now,step_range,1)
+        self.pos = pos
+        self.home = home
+        self.sigma = sigma
+
+    def move(radius):
+    	pos = hr.binorm_hitrun_circle(self.home,self.sigma,self.pos,self.pos,radius,1)
+    	self.pos = pos
+        return pos
+
+    def update_pos(p):
+    	self.pos = p
+
+    def update_home(h):
+    	self.home = h
+
+    def update_sigma(s):
+    	self.sigma = s
