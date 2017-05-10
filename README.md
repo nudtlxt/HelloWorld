@@ -1,3 +1,2 @@
-# HelloWorld
-My first repository
-I don't like the change
+# Small Scale Simulation
+Simulation based on pygame.
