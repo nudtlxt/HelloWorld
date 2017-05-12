@@ -65,14 +65,13 @@ class Fish(pygame.sprite.Sprite):
 
     	# calculate distance to check whether catched by camera, if catched update camera
     	d = vnorm(pos - self.camera.pos)
-    	if d<=self.camera.distance:
-    		self.camera.update()
-    	elif d>self.camera.distance and d<=self.camera.bait.distance:
-    		drawbin = self.camera.bait.bernoulli(self.camera.distance-self.camera.bait.distance)
-    		if drawbin:
-    			self.camera.update()
-
-
+    	if d<=self.camera.bait.distance:
+    		if d<=self.camera.distance:
+			self.camera.update()
+		else:
+			drawbin = self.camera.bait.bernoulli(self.camera.bait.distance-self.camera.distance)
+    			if drawbin:
+    				self.camera.update()
 
 class Group_fishes(pygame.sprite.Group):
 
