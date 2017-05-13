@@ -41,6 +41,7 @@ class Fish(pygame.sprite.Sprite):
         self.sigma = sigma
         self.radius = radius
         self.camera = camera
+	self.catched = 0
 
     def set_start_pos(self,p):
     	self.pos = p
@@ -68,10 +69,12 @@ class Fish(pygame.sprite.Sprite):
     	if d<=self.camera.bait.distance:
     		if d<=self.camera.distance:
 			self.camera.update()
+			self.catched = 1
 		else:
 			drawbin = self.camera.bait.bernoulli(self.camera.bait.distance-self.camera.distance)
     			if drawbin:
     				self.camera.update()
+				self.catched = 1
 
 class Group_fishes(pygame.sprite.Group):
 
