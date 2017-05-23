@@ -10,6 +10,8 @@ try:
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
+	
+my.fishgroup = pygame.sprite.Group()
 
 def load_png_fish(name):
     """ Load image and return image object"""
@@ -42,6 +44,7 @@ class Fish(pygame.sprite.Sprite):
         self.radius = radius
         self.camera = camera
 	self.catched = 0
+	self.add(my.fishgroup)
 
     def set_start_pos(self,p):
     	self.pos = p
@@ -64,22 +67,18 @@ class Fish(pygame.sprite.Sprite):
     	self.pos = pos
     	self.rect = pos
 
-    	# calculate distance to check whether catched by camera, if catched update camera
+    	# calculate distance to check whether catched by camera, if catched update camera and ignore this fish
     	d = vnorm(pos - self.camera.pos)
     	if d<=self.camera.bait.distance:
     		if d<=self.camera.distance:
 			self.camera.update()
 			self.catched = 1
+			self.remove(my.fishgroup)
 		else:
 			drawbin = self.camera.bait.bernoulli(self.camera.bait.distance-self.camera.distance)
     			if drawbin:
     				self.camera.update()
 				self.catched = 1
+				self.remove(my.fishgroup)
 
-class Group_fishes(pygame.sprite.Group):
-
-	#Container for fishes
-
-	def __init__(self, arg):
-        pygame.sprite.Group.__init__(self)
-		
+				
