@@ -26,11 +26,16 @@ def load_png_camera(name):
 
 class Bait(object):
     #docstring for bait
-    def __init__(self, distance):
+    def __init__(self, distance, lambda):
         self.distance = distance
+	self.lambda = lambda
+	
+    def set.lambda(lmd)
+	self.lambda = lmd
+	
     def bernoulli(self,dis):
     	#probability decrease as distance increase by exponential distribution
-    	p = np.exp(-lmd*dis)
+    	p = np.exp(-self.lambda*dis)
     	#draw under bernoulli(p)
     	return np.random.binomial(1,p,1)
 
@@ -52,7 +57,7 @@ class Camera(pygame.sprite.Sprite):
         self.count = 0
 	self.add(my.cameragroup)
 
-    def set_pos(self,p):
+    def set.pos(self,p):
     	self.pos = p
     	self.rect = p
 
