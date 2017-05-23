@@ -59,8 +59,8 @@ class Fish(pygame.sprite.Sprite):
     def set_radius(self,r):
     	self.radius = r
 
-	def vnorm(self,v):
-		return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+    def vnorm(self,v):
+	return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
 
     def update(self):
     	pos = hr.binorm_hitrun_circle(self.home,self.sigma,self.pos,self.pos,self.radius,1)
