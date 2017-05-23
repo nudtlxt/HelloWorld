@@ -8,6 +8,8 @@ except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
 
+my.cameragroup = pygame.sprite.Group()
+	
 def load_png_camera(name):
     """ Load image and return image object"""
     fullname = os.path.join('data', name)
@@ -48,6 +50,7 @@ class Camera(pygame.sprite.Sprite):
         self.distance = distance
         self.bait = bait
         self.count = 0
+	self.add(my.cameragroup)
 
     def set_pos(self,p):
     	self.pos = p
@@ -58,8 +61,3 @@ class Camera(pygame.sprite.Sprite):
     	self.count += 1
     	#change the color of the camera to show catching
 
-class Group_Cameras(pygame.sprite.Group):
-	#Container for cameras
-	def __init__(self, arg):
-		pygame.sprite.Group.__init__(self)
-		
