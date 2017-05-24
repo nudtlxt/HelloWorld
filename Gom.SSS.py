@@ -21,22 +21,6 @@ except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
 
-def load_png(name):
-    """ Load image and return image object"""
-    fullname = os.path.join('data', name)
-    try:
-        image = pygame.image.load(fullname)
-        if image.get_alpha is None:
-            image = image.convert()
-        else:
-            image = image.convert_alpha()
-    except pygame.error, message:
-        print 'Cannot load image:', fullname
-        raise SystemExit, message
-    return image, image.get_rect()
-
-def 
-
 def main():
     # Initialise screen
     pygame.init()
@@ -48,13 +32,9 @@ def main():
     background = background.convert()
     background.fill((0, 0, 0))
 
-    # Initialise homes, fishes, camera
+    # Initialise fishes, camera
     
 
-
-    # Initialise sprites
-    playersprites = pygame.sprite.RenderPlain((player1, player2))
-    ballsprite = pygame.sprite.RenderPlain(ball)
 
     # Blit everything to the screen
     screen.blit(background, (0, 0))
