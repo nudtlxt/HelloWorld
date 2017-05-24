@@ -33,7 +33,8 @@ def main():
     background.fill((0, 0, 0))
 
     # Initialise fishes, camera
-    
+    fish_group = fish.my.fishgroup
+    camera_group = my.cameragroup
 
 
     # Blit everything to the screen
@@ -52,13 +53,12 @@ def main():
             if event.type == QUIT:
                 return
 
-        screen.blit(background, ball.rect, ball.rect)
-        screen.blit(background, player1.rect, player1.rect)
-        screen.blit(background, player2.rect, player2.rect)
-        ballsprite.update()
-        playersprites.update()
-        ballsprite.draw(screen)
-        playersprites.draw(screen)
+        fish_group.clear()
+        camera_group.clear()
+        fish_group.update()
+        camera_group.update()
+        fish_group.draw()
+        camera_group.draw()
         pygame.display.flip()
 
 
