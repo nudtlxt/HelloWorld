@@ -1,18 +1,16 @@
 #Fish class and container
 
 try:
-	import os
-	import math
-	import hit_run as hr
-	import numpy as np
-	import pygame
-	from pygame.locals import *
+    import os
+    import math
+    import hit_run as hr
+    import numpy as np
+    import pygame
+    from pygame.locals import *
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
-	
-my.fishgroup = pygame.sprite.Group()
-
+    
 def load_png_fish(name):
     """ Load image and return image object"""
     fullname = os.path.join('data', name)
@@ -33,7 +31,7 @@ class Fish(pygame.sprite.Sprite):
     #Functions: move, update_pos, update_home, update_sigma
     #Attributes: area, pos, home, sigma
 
-    def __init__(self, pos, home, sigma,radius, camera):
+    def __init__(self, pos, home, sigma,radius, camera, fishgroup):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_png_fish('fish.png')
         screen = pygame.display.get_surface()
@@ -43,42 +41,40 @@ class Fish(pygame.sprite.Sprite):
         self.sigma = sigma
         self.radius = radius
         self.camera = camera
-	self.catched = 0
-	self.add(my.fishgroup)
+        self.catched = 0
+        self.add(fishgroup)
 
     def set_start_pos(self,p):
-    	self.pos = p
-    	self.rect = p
+        self.pos = p
+        self.rect = p
 
     def set_home(self,h):
-    	self.home = h
+        self.home = h
 
     def set_sigma(self,s):
-    	self.sigma = s
+        self.sigma = s
 
     def set_radius(self,r):
-    	self.radius = r
+        self.radius = r
 
     def vnorm(self,v):
-	return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+    return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
 
     def update(self):
-    	pos = hr.binorm_hitrun_circle(self.home,self.sigma,self.pos,self.pos,self.radius,1)
-    	self.pos = pos
-    	self.rect = pos
+        pos = hr.binorm_hitrun_circle(self.home,self.sigma,self.pos,self.pos,self.radius,1)
+        self.pos = pos
+        self.rect = pos
 
-    	# calculate distance to check whether catched by camera, if catched update camera and ignore this fish
-    	d = vnorm(pos - self.camera.pos)
-    	if d<=self.camera.bait.distance:
-    		if d<=self.camera.distance:
-			self.camera.update()
-			self.catched = 1
-			self.remove(my.fishgroup)
-		else:
-			drawbin = self.camera.bait.bernoulli(self.camera.bait.distance-self.camera.distance)
-    			if drawbin:
-    				self.camera.update()
-				self.catched = 1
-				self.remove(my.fishgroup)
-
-				
+        # calculate distance to check whether catched by camera, if catched update camera and ignore this fish
+        d = vnorm(pos - self.camera.pos)
+        if d<=self.camera.bait.distance:
+            if d<=self.camera.distance:
+                self.camera.update()
+                self.catched = 1
+                self.remove(self.groups())
+            else:
+                drawbin = self.camera.bait.bernoulli(self.camera.bait.distance-self.camera.distance)
+                    if drawbin:
+                        self.camera.update()
+                        self.catched = 1
+                        self.remove(self.groups())
