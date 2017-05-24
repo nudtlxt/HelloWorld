@@ -35,6 +35,8 @@ def load_png(name):
         raise SystemExit, message
     return image, image.get_rect()
 
+def 
+
 def main():
     # Initialise screen
     pygame.init()
@@ -47,9 +49,8 @@ def main():
     background.fill((0, 0, 0))
 
     # Initialise homes, fishes, camera
-    speed = 13
-    rand = ((0.1 * (random.randint(5,8))))
-    ball = Ball((0,0),(0.47,speed))
+    
+
 
     # Initialise sprites
     playersprites = pygame.sprite.RenderPlain((player1, player2))
@@ -70,22 +71,6 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
-            elif event.type == KEYDOWN:
-                if event.key == K_a:
-                    player1.moveup()
-                if event.key == K_z:
-                    player1.movedown()
-                if event.key == K_UP:
-                    player2.moveup()
-                if event.key == K_DOWN:
-                    player2.movedown()
-            elif event.type == KEYUP:
-                if event.key == K_a or event.key == K_z:
-                    player1.movepos = [0,0]
-                    player1.state = "still"
-                if event.key == K_UP or event.key == K_DOWN:
-                    player2.movepos = [0,0]
-                    player2.state = "still"
 
         screen.blit(background, ball.rect, ball.rect)
         screen.blit(background, player1.rect, player1.rect)
