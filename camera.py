@@ -7,8 +7,6 @@ try:
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
-
-my.cameragroup = pygame.sprite.Group()
 	
 def load_png_camera(name):
     """ Load image and return image object"""
@@ -28,10 +26,10 @@ class Bait(object):
     #docstring for bait
     def __init__(self, distance, lambda):
         self.distance = distance
-	self.lambda = lambda
+        self.lambda = lambda
 	
     def set.lambda(lmd)
-	self.lambda = lmd
+        self.lambda = lmd
 	
     def bernoulli(self,dis):
     	#probability decrease as distance increase by exponential distribution
@@ -46,7 +44,7 @@ class Camera(pygame.sprite.Sprite):
     #Functions: move, update_pos, update_home, update_sigma
     #Attributes: area, pos, home, sigma
 
-    def __init__(self, pos, distance, bait):
+    def __init__(self, pos, distance, bait, cameragroup):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_png_camera('camera.png')
         screen = pygame.display.get_surface()
@@ -55,7 +53,7 @@ class Camera(pygame.sprite.Sprite):
         self.distance = distance
         self.bait = bait
         self.count = 0
-	self.add(my.cameragroup)
+        self.add(cameragroup)
 
     def set.pos(self,p):
     	self.pos = p
