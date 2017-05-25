@@ -1,60 +1,65 @@
-#
-# GOM Small Scale Simulation
-# Xuetao Lu
-# 
-# Released under the GNU General Public License
-
-VERSION = "0.1"
+#Camera class and container
 
 try:
-    import sys
-    import fish
-    import camera
-    import pygame
-    from pygame.locals import *
+	import numpy as np
+	import pygame
+	from pygame.locals import *
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
+	
+def load_png_camera(name):
+    """ Load image and return image object"""
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+        if image.get_alpha is None:
+            image = image.convert()
+        else:
+            image = image.convert_alpha()
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    return image, image.get_rect()
 
-def main():
-    # Initialise screen
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption('GOM Small Scale Simulation')
+class Bait(object):
+    #docstring for bait
+    def __init__(self, distance, lambda):
+        self.distance = distance
+        self.lambda = lambda
+	
+    def set.lambda(lmd)
+        self.lambda = lmd
+	
+    def bernoulli(self,dis):
+    	#probability decrease as distance increase by exponential distribution
+    	p = np.exp(-self.lambda*dis)
+    	#draw under bernoulli(p)
+    	return np.random.binomial(1,p,1)
 
-    # Fill background, here I need to load the map as the background
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((0, 0, 0))
+class Camera(pygame.sprite.Sprite):
 
-    # Create fishe & camera groups
-    fish_group = pygame.sprite.Group()
-    camera_group = pygame.sprite.Group()
-    # 
+    #Camera
+    #Returns: Camera object
+    #Functions: move, update_pos, update_home, update_sigma
+    #Attributes: area, pos, home, sigma
 
-    # Blit everything to the screen
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
+    def __init__(self, pos, distance, bait, cameragroup):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_png_camera('camera.png')
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
+        self.pos = pos
+        self.distance = distance
+        self.bait = bait
+        self.count = 0
+        self.add(cameragroup)
 
-    # Initialise clock
-    clock = pygame.time.Clock()
+    def set.pos(self,p):
+    	self.pos = p
+    	self.rect = p
 
-    # Event loop
-    while 1:
-        # Make sure game doesn't run at more than 60 frames per second
-        clock.tick(60)
-
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                return
-
-        fish_group.clear()
-        camera_group.clear()
-        fish_group.update()
-        camera_group.update()
-        fish_group.draw()
-        camera_group.draw()
-        pygame.display.flip()
-
-
-if __name__ == '__main__': main()
+    def update(self):
+    	#count the number of catching fish
+    	self.count += 1
+#change the color of the camera to show catching
