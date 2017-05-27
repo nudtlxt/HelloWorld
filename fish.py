@@ -2,17 +2,20 @@
 
 try:
     import os
+    import sys
     import math
     import hit_run as hr
     import numpy as np
+    import random
     import pygame
     from pygame.locals import *
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
-    
-def load_png_fish(name):
-    """ Load image and return image object"""
+
+
+"""def load_png_fish(name):
+    #Load image and return image object
     fullname = os.path.join('data', name)
     try:
         image = pygame.image.load(fullname)
@@ -24,6 +27,7 @@ def load_png_fish(name):
         print 'Cannot load image:', fullname
         raise SystemExit, message
     return image, image.get_rect()
+"""
 
 class Fish(pygame.sprite.Sprite):
 
@@ -31,16 +35,22 @@ class Fish(pygame.sprite.Sprite):
     #Functions: move, update_pos, update_home, update_sigma
     #Attributes: area, pos, home, sigma
 
-    def __init__(self, pos, home, sigma,radius, camera, fishgroup):
+    def __init__(self, pos, home, sigma,radius, cameraGroup, fishgroup):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_png_fish('fish.png')
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        #self.image, self.rect = load_png_fish('fish.png')
+        #screen = pygame.display.get_surface()
+        #self.area = screen.get_rect()
+
+        self.image=pygame.Surface((5,5))
+        self.image.fill((255,255,0))
+        self.rect=self.image.get_rect()
+        self.rect.center=pos
+
         self.pos = pos
         self.home = home
         self.sigma = sigma
         self.radius = radius
-        self.camera = camera
+        self.cameraGroup = cameraGroup
         self.catched = 0
         self.add(fishgroup)
 
@@ -58,23 +68,30 @@ class Fish(pygame.sprite.Sprite):
         self.radius = r
 
     def vnorm(self,v):
-    return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+        return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+
+    def totuple(self,a):
+        try:
+            return tuple(self.totuple(i) for i in a)
+        except TypeError:
+            return a
 
     def update(self):
         pos = hr.binorm_hitrun_circle(self.home,self.sigma,self.pos,self.pos,self.radius,1)
         self.pos = pos
-        self.rect = pos
+        self.rect.center = self.totuple(pos)
 
         # calculate distance to check whether catched by camera, if catched update camera and ignore this fish
-        d = vnorm(pos - self.camera.pos)
-        if d<=self.camera.bait.distance:
-            if d<=self.camera.distance:
-                self.camera.update()
-                self.catched = 1
-                self.remove(self.groups())
-            else:
-                drawbin = self.camera.bait.bernoulli(self.camera.bait.distance-self.camera.distance)
+        for camera in self.cameraGroup.sprites():
+            d = self.vnorm(pos - camera.pos)
+            if d<=camera.bait.distance:
+                if d<=camera.distance:
+                    camera.update()
+                    self.catched = 1
+                    self.remove(self.groups())
+                else:
+                    drawbin = camera.bait.bernoulli(camera.bait.distance-camera.distance)
                     if drawbin:
-                        self.camera.update()
+                        camera.update()
                         self.catched = 1
                         self.remove(self.groups())
