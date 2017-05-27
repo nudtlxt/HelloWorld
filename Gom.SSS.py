@@ -8,34 +8,69 @@ VERSION = "0.1"
 
 try:
     import sys
-    import random
-    import math
-    import os
-    import getopt
-    import pygame
     import fish
     import camera
-    from socket import *
+    import pygame
+    import numpy as np
+    import random
     from pygame.locals import *
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
 
+# Create camera
+def cameraFactory(cameraGroup,surf,n_camera):
+
+    # Bait radius
+    br = 50
+    # Camera radius
+    cr = 10
+    for i in xrange(0,n_camera):
+        camera_pos = np.array([random.uniform(100,500),random.uniform(100,400)])
+        camera.Camera(camera_pos, cr, camera.Bait(br, 0.05), cameraGroup)
+        # Draw camera territory
+        #pygame.draw.circle(surf, ((255, 0, 0)), ((int(camera_pos[0]), int(camera_pos[1]))), 3)
+        pygame.draw.circle(surf, ((255, 0, 0)), ((int(camera_pos[0]), int(camera_pos[1]))), cr, 1)
+        pygame.draw.circle(surf, ((255, 0, 0)), ((int(camera_pos[0]), int(camera_pos[1]))), br, 1)
+
+# Create fishes
+def fishFactory(fishGroup,surf,n_fish,camera_g):
+    # Initialise parameters
+    home = np.array([320,240])
+    sigma = np.array([[10000,0],[0,10000]])
+    radius = 15
+
+    for i in xrange(0,n_fish):
+        x = int(np.random.multivariate_normal(home, sigma, 1)[0,0])
+        y = int(np.random.multivariate_normal(home, sigma, 1)[0,1])
+        fish.Fish(np.array([x,y]), home, sigma, radius, camera_g, fishGroup)
+
+    # Draw home
+    pygame.draw.circle(surf, ((0, 255, 0)), ((320, 240)), 5)
+
+    # Draw fish territory
+    pygame.draw.circle(surf, ((0, 255, 0)), ((home[0], home[1])), 5)
+    pygame.draw.circle(surf, ((0, 255, 0)), ((home[0], home[1])), 100, 1)
+    pygame.draw.circle(surf, ((0, 255, 0)), ((home[0], home[1])), 200, 1)
+
+# Main function    
 def main():
     # Initialise screen
     pygame.init()
     screen = pygame.display.set_mode((640, 480))
     pygame.display.set_caption('GOM Small Scale Simulation')
 
-    # Fill background
+    # Fill background, here I need to load the map as the background
     background = pygame.Surface(screen.get_size())
     background = background.convert()
     background.fill((0, 0, 0))
 
-    # Initialise fishes, camera
-    fish_group = fish.my.fishgroup
-    camera_group = my.cameragroup
+    # Create fishe & camera groups
+    fish_group = pygame.sprite.Group()
+    camera_group = pygame.sprite.Group()
 
+    cameraFactory(camera_group,background,1)
+    fishFactory(fish_group,background,1,camera_group)
 
     # Blit everything to the screen
     screen.blit(background, (0, 0))
@@ -47,19 +82,20 @@ def main():
     # Event loop
     while 1:
         # Make sure game doesn't run at more than 60 frames per second
-        clock.tick(60)
+        clock.tick(20)
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
 
-        fish_group.clear()
-        camera_group.clear()
+        fish_group.clear(screen,background)
+        #camera_group.clear(screen,background)
         fish_group.update()
-        camera_group.update()
-        fish_group.draw()
-        camera_group.draw()
+        #camera_group.update()
+        fish_group.draw(screen)
+        camera_group.draw(screen)
         pygame.display.flip()
+        pygame.time.delay(50)
 
 
 if __name__ == '__main__': main()
