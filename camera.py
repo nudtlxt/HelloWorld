@@ -1,15 +1,19 @@
 #Camera class and container
 
 try:
-	import numpy as np
-	import pygame
-	from pygame.locals import *
+    import os
+    import sys
+    import numpy as np
+    import pygame
+    import random
+    from pygame.locals import *
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)
-	
+
+"""   
 def load_png_camera(name):
-    """ Load image and return image object"""
+    #Load image and return image object
     fullname = os.path.join('data', name)
     try:
         image = pygame.image.load(fullname)
@@ -21,21 +25,22 @@ def load_png_camera(name):
         print 'Cannot load image:', fullname
         raise SystemExit, message
     return image, image.get_rect()
+"""
 
 class Bait(object):
     #docstring for bait
-    def __init__(self, distance, lambda):
+    def __init__(self, distance, lam):
         self.distance = distance
-        self.lambda = lambda
-	
-    def set.lambda(lmd)
-        self.lambda = lmd
-	
+        self.lam = lam
+    
+    def set_lam(self,lmd):
+        self.lam = lmd
+    
     def bernoulli(self,dis):
-    	#probability decrease as distance increase by exponential distribution
-    	p = np.exp(-self.lambda*dis)
-    	#draw under bernoulli(p)
-    	return np.random.binomial(1,p,1)
+        #probability decrease as distance increase by exponential distribution
+        p = np.exp(-self.lam*dis)
+        #draw under bernoulli(p)
+        return np.random.binomial(1,p,1)
 
 class Camera(pygame.sprite.Sprite):
 
@@ -46,20 +51,28 @@ class Camera(pygame.sprite.Sprite):
 
     def __init__(self, pos, distance, bait, cameragroup):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_png_camera('camera.png')
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        #self.image, self.rect = load_png_camera('camerag.png')
+        #screen = pygame.display.get_surface()
+        #self.area = screen.get_rect()
+
+        self.image=pygame.Surface((5,5))
+        self.image.fill((255,0,0))
+        self.rect=self.image.get_rect()
+        self.rect.center=pos
+
         self.pos = pos
         self.distance = distance
         self.bait = bait
         self.count = 0
         self.add(cameragroup)
 
-    def set.pos(self,p):
-    	self.pos = p
-    	self.rect = p
+    def set_pos(self,p):
+        self.pos = p
+        self.rect = p
 
     def update(self):
-    	#count the number of catching fish
-    	self.count += 1
-#change the color of the camera to show catching
+        #count the number of catching fish
+        self.count += 1
+        #change the color of the camera to show catching
+        random_color = random.randint(0,255),random.randint(0,255),random.randint(0,255)
+        self.image.fill(random_color)
